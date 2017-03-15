@@ -304,9 +304,9 @@ public class DividerSnapAlgorithm {
      * meets the minimal size requirement.
      */
     private void maybeAddTarget(int position, int smallerSize) {
-        if (smallerSize >= mMinimalSizeResizableTask) {
+        // if (smallerSize >= mMinimalSizeResizableTask) {
             mTargets.add(new SnapTarget(position, position, SnapTarget.FLAG_NONE));
-        }
+        // }
     }
 
     private void addMiddleTarget(boolean isHorizontalDivision) {
