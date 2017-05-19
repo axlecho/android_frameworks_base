@@ -130,6 +130,7 @@ import android.view.textservice.TextServicesManager;
 
 import java.util.HashMap;
 
+import com.oem.os.ThreeKeyManager;
 /**
  * Manages all of the system services that can be returned by {@link Context#getSystemService}.
  * Used by {@link ContextImpl}.
@@ -774,6 +775,13 @@ final class SystemServiceRegistry {
             public ContextHubManager createService(ContextImpl ctx) {
                 return new ContextHubManager(ctx.getOuterContext(),
                   ctx.mMainThread.getHandler().getLooper());
+            }});
+
+        registerService(Context.THREEKEY_SERVICE,ThreeKeyManager.class,
+                new CachedServiceFetcher<ThreeKeyManager>() {
+            @Override
+            public ThreeKeyManager createService(ContextImpl ctx) {
+                return new ThreeKeyManager(ctx);
             }});
     }
 

@@ -111,6 +111,8 @@ import com.android.server.vr.VrManagerService;
 import com.android.server.webkit.WebViewUpdateService;
 import com.android.server.wm.WindowManagerService;
 
+import com.oneplus.threekey.ThreeKeyService;
+
 import cyanogenmod.providers.CMSettings;
 import dalvik.system.VMRuntime;
 import dalvik.system.PathClassLoader;
@@ -583,6 +585,7 @@ public final class SystemServer {
         HardwarePropertiesManagerService hardwarePropertiesService = null;
         Object wigigP2pService = null;
         Object wigigService = null;
+        ThreeKeyService threeKeyService = null;
 
         boolean disableStorage = SystemProperties.getBoolean("config.disable_storage", false);
         boolean disableBluetooth = SystemProperties.getBoolean("config.disable_bluetooth", false);
@@ -1311,6 +1314,10 @@ public final class SystemServer {
         // MMS service broker
         mmsService = mSystemServiceManager.startService(MmsServiceBroker.class);
 
+        // ThreeKey service
+        threeKeyService = new ThreeKeyService(context);
+        ServiceManager.addService("ThreeKeyService",threeKeyService);
+
         final Class<?> serverClazz;
         try {
             serverClazz = Class.forName(externalServer);
@@ -1456,6 +1463,7 @@ public final class SystemServer {
         final TelephonyRegistry telephonyRegistryF = telephonyRegistry;
         final MediaRouterService mediaRouterF = mediaRouter;
         final MmsServiceBroker mmsServiceF = mmsService;
+        final ThreeKeyService threeKeyServiceF = threeKeyService;
 
         // We now tell the activity manager it is okay to run third party
         // code.  It will call back into us once it has gotten to the state
@@ -1591,6 +1599,12 @@ public final class SystemServer {
                     if (networkScoreF != null) networkScoreF.systemRunning();
                 } catch (Throwable e) {
                     reportWtf("Notifying NetworkScoreService running", e);
+                }
+
+                try {
+                    if (threeKeyServiceF != null) threeKeyServiceF.systemRunning();
+                } catch (Throwable e) {
+                    reportWtf("Notifying OnePlusNfcService running", e);
                 }
                 Trace.traceEnd(Trace.TRACE_TAG_SYSTEM_SERVER);
             }
