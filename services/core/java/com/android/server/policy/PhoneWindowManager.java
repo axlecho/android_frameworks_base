@@ -6422,6 +6422,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
 
+    private boolean isDisableHwKey() {
+        return false;
+    }
+
     /** {@inheritDoc} */
     @Override
     public int interceptKeyBeforeQueueing(KeyEvent event, int policyFlags) {
@@ -6437,6 +6441,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         final int scanCode = event.getScanCode();
 
         final boolean isInjected = (policyFlags & WindowManagerPolicy.FLAG_INJECTED) != 0;
+        final boolean isFromNavbar = (event.getFlags() & KeyEvent.FLAG_VIRTUAL_HARD_KEY) != 0;
+
+        // we don't disable the navbar if we use the soft key
+        if ((!isFromNavbar && isDisableHwKey()) &&
+                (keyCode == KeyEvent.KEYCODE_BACK
+                || keyCode == KeyEvent.KEYCODE_HOME
+                || keyCode == KeyEvent.KEYCODE_APP_SWITCH)) {
+            return 0;
+        }
 
         // If screen is off then we treat the case where the keyguard is open but hidden
         // the same as if it were open and in front.
