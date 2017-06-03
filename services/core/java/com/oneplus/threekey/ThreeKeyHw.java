@@ -89,10 +89,22 @@ public class ThreeKeyHw {
                 String devPath = event.get("DEVPATH");
                 String name = event.get("SWITCH_NAME");
                 int state = Integer.parseInt(event.get("SWITCH_STATE"));
+                broadcastState(state);
             } catch (NumberFormatException e) {
                 Slog.e(TAG, "Could not parse switch state from event " + event);
             }
         }
+    }
+
+    private void broadcastState(int state) {
+        if (state <= 0 || state > 3) {
+            Slog.e(TAG,"bad three key state " + state);
+            return;
+        }
+        Intent intent = new Intent();
+        intent.putExtra("state",state);
+        intent.setAction("com.lineage.onyx.threekey");
+        mContext.sendBroadcastAsUser(intent,UserHandle.ALL);
     }
 
     public static class ThreeKeyUnsupportException extends Exception
